@@ -201,22 +201,30 @@ var I={en:{sec_company:'Company Information',f_company:'Company Name',f_website:
 function t(k){return(L==='es'&&I_ES[k])||I[k];}
 function setLang(l){L=l;document.querySelectorAll('.lang-btn').forEach(function(b,i){b.classList.toggle('active',(i===0&&l==='en')||(i===1&&l==='es'))});updateLabels();}
 function setMode(m){
-  document.getElementById('mClient').classList.toggle('active',m==='client');
-  document.getElementById('mInternal').classList.toggle('active',m==='internal');
-  var p=document.getElementById('proposal'),ib=document.getElementById('internalBrief');
-  p.style.display=m==='client'?'block':'none';
-  ib.style.display=m==='internal'?'block':'none';
-  if(m==='client'){ib.innerHTML='';document.getElementById('btnGen').textContent=t('btn_gen');}
+  document.getElementById('mC').classList.toggle('active',m==='client');
+  document.getElementById('mI').classList.toggle('active',m==='internal');
+  var p=document.getElementById('pr'),ib=document.getElementById('ib');
+  p.classList.toggle('v',m==='client');
+  ib.classList.toggle('v',m==='internal');
+  if(m==='client'){ib.innerHTML='';document.getElementById('bG').textContent=t('btn_gen');}
 }
-function updateLabels(){document.querySelectorAll('[data-i18n]').forEach(function(el){var k=el.getAttribute('data-i18n');if(['company','companyName','website','contactName','infrastructure','workstations','laptops','servers','budgetRange','currentState','currentEmail','currentBackup','generate','emptyTitle','emptyDesc'].indexOf(k)>=0)el.innerHTML=t(k);});}
+function updateLabels(){
+  var ids={l_company:'sec_company',l_co:'f_company',l_web:'f_website',l_ct:'f_contact',l_ind:'f_industry',
+    l_infra:'sec_infra',l_ws:'f_ws',l_lp:'f_lap',l_sv:'f_srv',l_bud:'f_budget',
+    l_state:'sec_state',l_em:'f_email',l_bk:'f_backup',bG:'btn_gen',eT:'empty_t',eD:'empty_d'};
+  for(var lid in ids){
+    var el=document.getElementById(lid);
+    if(el) el.textContent=t(ids[lid]);
+  }
+}
 function adj(id,d){var el=document.getElementById(id);el.value=Math.max(0,(parseInt(el.value)||0)+d);}
 
 function calc(){
-  var u=(parseInt(document.getElementById('v_ws').value)||0)+(parseInt(document.getElementById('v_lap').value)||0);
-  var dev=u+(parseInt(document.getElementById('v_srv').value)||0);
+  var u=(parseInt(document.getElementById('v_ws').value)||0)+(parseInt(document.getElementById('v_lp').value)||0);
+  var dev=u+(parseInt(document.getElementById('v_sv').value)||0);
   var eps=dev;
-  var b=document.getElementById('f_budget').value;
-  var rules=IND[document.getElementById('f_industry').value]||IND.other;
+  var b=document.getElementById('f_bud').value;
+  var rules=IND[document.getElementById('f_ind').value]||IND.other;
 
   // TIER 1
   var t1m=(P.m365_bp.s*u)+(P.msp360.s*dev)+P.b2+(P.dropsuite.s*u)+(P.labor_h*3);
@@ -254,18 +262,18 @@ function calc(){
 }
 
 function gen(){
-  var btn=document.getElementById('btnGen');
+  var btn=document.getElementById('bG');
   btn.disabled=true;btn.textContent=t('generating');
   setTimeout(function(){
     var d=calc();
     var isES=L==='es';
-    var co=document.getElementById('f_company').value||'Client';
-    var ct=document.getElementById('f_contact').value||'';
+    var co=document.getElementById('f_co').value||'Client';
+    var ct=document.getElementById('f_ct').value||'';
     var rec=d.budget==='flexible'?3:d.budget==='tight'?1:2;
-    var cp=document.getElementById('proposal');
-    cp.innerHTML='';cp.classList.add('visible');
-    document.getElementById('internalBrief').classList.remove('visible');
-    document.getElementById('emptySt').style.display='none';
+    var cp=document.getElementById('pr');
+    cp.innerHTML='';cp.classList.add('v');
+    document.getElementById('ib').classList.remove('v');
+    document.getElementById('eS').style.display='none';
 
     function page(h){var dv=document.createElement('div');dv.className='pp';dv.innerHTML=h;cp.appendChild(dv);}
 
@@ -345,7 +353,7 @@ function gen(){
       '</div></div>');
 
     // INTERNAL BRIEF
-    var ib=document.getElementById('internalBrief');
+    var ib=document.getElementById('ib');
     ib.innerHTML='';
     function ibS(h){ib.insertAdjacentHTML('beforeend','<div class="ib-sec">'+h+'</div>');}
     ibS('<div class="ib-hdr"><h2>'+t('intTitle')+': '+co+'</h2><p>'+d.rules.en+' | '+d.u+' users | '+d.dev+' devices</p></div>');
