@@ -4,6 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SMGTEC Proposal Generator</title>
+<meta property="og:title" content="SMGTEC Proposal Generator">
+<meta property="og:description" content="Generate professional IT service proposals in seconds.">
+<meta property="og:type" content="website">
+<meta name="description" content="Generate professional IT service proposals in seconds.">
 <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-NH9SQDQM');</script>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -86,7 +90,7 @@ body{font-family:Inter,sans-serif;background:var(--bg);color:var(--txt);line-hei
 <header class="hdr">
   <div class="hd"><div class="hl">SM</div><div><div class="ht">SMGTEC Proposal Generator</div></div></div>
   <div class="ha">
-    <div class="seg"><button class="tb active" onclick="setLang('en')">EN</button><button class="tb" onclick="setLang('es')">ES</button></div>
+    <div class="seg lg"><button class="tb active" onclick="setLang('en')">EN</button><button class="tb" onclick="setLang('es')">ES</button></div>
     <div class="seg"><button class="tb active" onclick="setMode('client')" id="mC">Client</button><button class="tb" onclick="setMode('internal')" id="mI">Internal</button></div>
   </div>
 </header>
@@ -121,7 +125,7 @@ body{font-family:Inter,sans-serif;background:var(--bg);color:var(--txt);line-hei
   <button class="btn" onclick="gen()" id="bG">Generate</button>
 </aside>
 <main class="pv">
-  <div class="pe" id="eS"><h3>No proposal yet</h3><p>Fill in and click Generate.</p></div>
+  <div class="pe" id="eS"><h3 id="txt_et">No proposal yet</h3><p id="txt_ed">Fill in and click Generate.</p></div>
   <div class="pr" id="pr"></div>
   <div class="ib" id="ib"></div>
 </main>
@@ -214,16 +218,14 @@ var LG = function(k) { return T[LANG][k] || k; };
 function setLang(l) {
   LANG = l;
   // Toggle button visual state
-  var btns = document.querySelectorAll('.seg .tb');
-  btns[0].classList.toggle('active', l === 'en');
-  btns[1].classList.toggle('active', l === 'es');
+  document.querySelector('.seg.lg').children[0].classList.toggle('active', l === 'en');
+  document.querySelector('.seg.lg').children[1].classList.toggle('active', l === 'es');
   // Update all labels
   var ids = {
-    lbl_co:'co', lbl_web:'web', lbl_ct:'ct', lbl_ind:'ind',
-    lbl_ws:'ws', lbl_lp:'lp', lbl_sv:'sv', lbl_bud:'bud',
-    lbl_em:'em', lbl_bk:'bk', bG:'gen', txt_et:'empty_t', txt_ed:'empty_d',
-    sec_co:'company', sec_infra:'infra', sec_st:'state',
-    lbl_t1:'t1n', lbl_t2:'t2n', lbl_t3:'t3n'
+    l_co:'co', l_ct:'ct', l_ind:'ind',
+    l_ws:'ws', l_lp:'lp', l_sv:'sv', l_bud:'bud',
+    bG:'gen', txt_et:'empty_t', txt_ed:'empty_d',
+    l_company:'company', l_infra:'infra'
   };
   for (var id in ids) {
     var el = document.getElementById(id);
@@ -278,7 +280,13 @@ function calc() {
   var t3cm = t2cm + s1mc + (P.labor * 3);
   var t3ct = t2ct + P.dell.c + P.datto.c + P.apc.c + 800;
 
-  [t1mo,t2mo,t3mo,t2ot,t3ot].forEach(function(v,i){[t1mo,t2mo,t3mo,t2ot,t3ot][i]=Math.round(v);});
+  [t1mo,t2mo,t3mo,t2ot,t3ot,t1cm,t2cm,t3cm,t1ct,t2ct,t3ct].forEach(function(v,i,a){
+    var target=[t1mo,t2mo,t3mo,t2ot,t3ot,t1cm,t2cm,t3cm,t1ct,t2ct,t3ct];
+    target[i]=Math.round(v);
+    // reassign to keep variables in sync
+    t1mo=target[0];t2mo=target[1];t3mo=target[2];t2ot=target[3];t3ot=target[4];
+    t1cm=target[5];t2cm=target[6];t3cm=target[7];t1ct=target[8];t2ct=target[9];t3ct=target[10];
+  });
 
   function td(mo,ot,cm,ct){
     var yr=ot+mo*12, yc=ct+cm*12, p=yr-yc, m=yr>0?Math.round(p/yr*100):0;
@@ -403,7 +411,7 @@ function gen() {
       '<div style="background:#0a0a0a;color:#DEDBC8;padding:32px;border-radius:12px;text-align:center;">' +
       '<h4 style="font-family:\'Instrument Serif\',serif;font-size:20px;margin-bottom:8px;">Next Step</h4>' +
       '<p style="font-size:13px;color:#999;margin-bottom:16px;">One decision. That\'s it. Sign → Order → 8 days → protected.</p>' +
-      '<a href="#" style="display:inline-block;padding:12px 32px;background:#DEDBC8;color:#0a0a0a;border-radius:8px;font-size:13px;font-weight:600;text-decoration:none;">Download PDF</a>' +
+      '<a href="javascript:void(0)" onclick="window.print()" style="display:inline-block;padding:12px 32px;background:#DEDBC8;color:#0a0a0a;border-radius:8px;font-size:13px;font-weight:600;text-decoration:none;cursor:pointer;">Download PDF</a>' +
       '</div></div>');
 
     // ═══ INTERNAL BRIEFING ═══
