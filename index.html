@@ -46,38 +46,31 @@ body{font-family:Inter,sans-serif;background:var(--bg);color:var(--txt);line-hei
 .pr{display:none;max-width:760px;margin:0 auto}
 .pr.v{display:block}
 .pp{background:#fff;color:#1a1a1a;border-radius:var(--r);overflow:hidden;margin-bottom:18px;box-shadow:0 3px 16px rgba(0,0,0,.25)}
-.pc{background:#0a0a0a;color:#DEDBC8;padding:50px 40px;text-align:center}
-.pl{font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:24px}
-.pt{font-family:Instrument Serif,serif;font-size:28px;font-weight:400;margin-bottom:8px}
-.ps{font-size:12px;color:#999;margin-bottom:24px}
-.pv2{font-size:10px;color:#666;margin-top:16px}
-.pb{padding:40px}
-.exs{background:#f8f7f4;border-left:4px solid #DEDBC8;padding:16px 20px;border-radius:0 var(--r) var(--r) 0;margin-bottom:24px}
-.exs p{font-size:11px;color:#444;line-height:1.7}
-.rk{background:#fef2f2;border:1px solid #fecaca;border-radius:var(--r);padding:16px 20px;margin-bottom:24px}
-.rk h4{font-size:11px;font-weight:600;color:#991b1b;margin-bottom:8px}
-.rk ul{list-style:none;padding:0}
-.rk li{font-size:10px;color:#7f1d1d;padding:3px 0;padding-left:12px;position:relative}
-.rk li::before{content:"→";position:absolute;left:0;color:#dc2626}
-.tc{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px}
-.tk{border:2px solid #e5e5e5;border-radius:var(--r);padding:20px;position:relative}
-.tk.rec{border-color:#DEDBC8;background:#faf9f6}
-.tk.rec::before{content:"REC.";position:absolute;top:-8px;left:50%;transform:translateX(-50%);background:#DEDBC8;color:#0a0a0a;font-size:9px;font-weight:700;padding:2px 8px;border-radius:6px}
-.tn{font-family:Instrument Serif,serif;font-size:16px;color:#0a0a0a;margin-bottom:2px}
-.tpr{margin-bottom:12px}
-.tpa{font-size:22px;font-weight:700;color:#0a0a0a}
-.tpp{font-size:10px;color:#888}
-.tf{list-style:none;padding:0}
-.tf li{font-size:10px;color:#444;padding:3px 0;padding-left:16px;position:relative}
-.tf li.y::before{content:"✓";position:absolute;left:0;color:#4CAF50;font-weight:700}
-.ro{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px}
-.roc{padding:16px 20px;border-radius:var(--r)}
-.roc.n{background:#fef2f2;border:1px solid #fecaca}
-.roc.y2{background:#f0fdf4;border:1px solid #bbf7d0}
-.nx{background:#0a0a0a;color:#DEDBC8;padding:24px;border-radius:var(--r);text-align:center}
-.nx h3{font-family:Instrument Serif,serif;font-size:16px;margin-bottom:5px}
-.nx p{font-size:11px;color:#999;margin-bottom:14px}
-.nx a{display:inline-block;padding:9px 24px;background:#DEDBC8;color:#0a0a0a;border-radius:var(--r);font-size:11px;font-weight:600;text-decoration:none}
+.pp-cover{background:#0a0a0a;color:#DEDBC8;padding:60px 40px;text-align:center}
+.pp-logo{font-weight:700;font-size:13px;letter-spacing:3px;text-transform:uppercase;margin-bottom:28px;color:var(--gold2)}
+.pp-title{font-family:Instrument Serif,serif;font-size:30px;font-weight:400;margin-bottom:6px;color:#fff}
+.pp-sub{font-size:12px;color:#999;margin-bottom:28px}
+.pp-client{font-size:12px;color:#DEDBC8;margin-bottom:4px}
+.pp-valid{font-size:10px;color:#666;margin-top:12px}
+.pp-body{padding:40px}
+.pp-body h2{font-family:Instrument Serif,serif;font-size:22px;color:#0a0a0a;margin-bottom:16px;padding-bottom:8px;border-bottom:2px solid #DEDBC8}
+.executive-summary{background:#f8f7f4;border-left:4px solid #DEDBC8;padding:16px 20px;border-radius:0 var(--r) var(--r) 0;margin-bottom:24px}
+.executive-summary p{font-size:11px;color:#444;line-height:1.7}
+.risk-box{background:#fef2f2;border:1px solid #fecaca;border-radius:var(--r);padding:16px 20px;margin-bottom:24px}
+.risk-box h4{font-size:11px;font-weight:600;color:#991b1b;margin-bottom:8px}
+.risk-box ul{list-style:none;padding:0}
+.risk-box li{font-size:10px;color:#7f1d1d;padding:3px 0;padding-left:12px;position:relative}
+.risk-box li::before{content:"→";position:absolute;left:0;color:#dc2626}
+.tier-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px}
+.tcard{border:2px solid #e5e5e5;border-radius:var(--r);padding:20px;position:relative}
+.tcard.recommended{border-color:#DEDBC8;background:#faf9f6}
+.tcard-name{font-family:Instrument Serif,serif;font-size:16px;color:#0a0a0a;margin-bottom:2px}
+.tcard-price{margin-bottom:12px}
+.tcard-price-amount{font-size:22px;font-weight:700;color:#0a0a0a}
+.tcard-price-period{font-size:10px;color:#888}
+.tcard-features{list-style:none;padding:0}
+.tcard-features li{font-size:10px;color:#444;padding:3px 0;padding-left:16px;position:relative}
+.tcard-features li.included::before{content:"✓";position:absolute;left:0;color:#4CAF50;font-weight:700}
 .ib{display:none;max-width:760px;margin:0 auto}
 .ib.v{display:block}
 @media print{.hdr,.sb{display:none!important}.main{display:block}.pv{padding:0;max-height:calc(100vh - 60px);overflow:visible}.pp{box-shadow:none;border-radius:0;page-break-after:always}.ib{display:none!important}}
@@ -100,9 +93,12 @@ body{font-family:Inter,sans-serif;background:var(--bg);color:var(--txt);line-hei
   <div class="fs"><div class="fst" id="l_company">Company Info</div>
     <div class="fg"><label class="fl" id="l_co">Company Name</label><input class="fi" id="f_co" value="N&amp;B Legal"></div>
     <div class="fg"><label class="fl" id="l_ct">Contact</label><input class="fi" id="f_ct" value="Syed Zeeshan Rizvi"></div>
+    <div class="fg"><label class="fl" id="l_em">Email</label><input class="fi" id="f_em" value="" placeholder="client@example.com"></div>
+    <div class="fg"><label class="fl" id="l_web">Website</label><input class="fi" id="f_web" value="" placeholder="example.com"></div>
     <div class="fg"><label class="fl" id="l_ind">Industry</label>
       <select class="fsel" id="f_ind"><option value="legal" selected>Legal</option><option value="healthcare">Healthcare</option><option value="finance">Finance</option><option value="other">Other</option></select>
     </div>
+    <div class="fg"><label class="fl" id="l_state">Current IT State</label><textarea class="fi" id="f_state" rows="2" placeholder="e.g. single computer, no backup" style="resize:vertical;min-height:50px"></textarea></div>
   </div>
   <div class="fs"><div class="fst" id="l_infra">Infrastructure</div>
     <div class="fw">
@@ -222,7 +218,7 @@ function setLang(l) {
   document.querySelector('.seg.lg').children[1].classList.toggle('active', l === 'es');
   // Update all labels
   var ids = {
-    l_co:'co', l_ct:'ct', l_ind:'ind',
+    l_co:'co', l_ct:'ct', l_em:'em', l_web:'web', l_ind:'ind', l_state:'state',
     l_ws:'ws', l_lp:'lp', l_sv:'sv', l_bud:'bud',
     bG:'gen', txt_et:'empty_t', txt_ed:'empty_d',
     l_company:'company', l_infra:'infra'
@@ -312,6 +308,9 @@ function gen() {
     var isES = LANG === 'es';
     var co = document.getElementById('f_co').value || 'Client';
     var ct_txt = document.getElementById('f_ct').value;
+    var em_txt = document.getElementById('f_em').value;
+    var web_txt = document.getElementById('f_web').value;
+    var state_txt = document.getElementById('f_state').value;
     var rec = document.getElementById('f_bud').value === 'flexible' ? 3 : document.getElementById('f_bud').value === 'tight' ? 1 : 2;
 
     var cp = document.getElementById('pr');
@@ -332,14 +331,16 @@ function gen() {
       '<div class="pp-logo">SMGTEC SL</div>' +
       '<h1 class="pp-title">' + (isES ? 'Propuesta de Infraestructura' : 'Infrastructure Proposal') + '</h1>' +
       '<div class="pp-sub">Data Protection + Security + Compliance</div>' +
-      '<div class="pp-client"><strong>' + LG('prepared') + ':</strong> ' + co + (ct_txt ? ' — ' + ct_txt : '') + '</div>' +
-      '<div class="pp-valid">' + LG('prepared').replace('for','') + ' ' + new Date().toLocaleDateString(isES ? 'es-ES' : 'en-GB') + '</div>' +
+      '<div class="pp-client"><strong>' + LG('prepared') + ':</strong> ' + co + '</div>' +
+      (ct_txt ? '<div class="pp-client" style="font-size:11px;color:#999">' + ct_txt + (em_txt ? ' · ' + em_txt : '') + (web_txt ? ' · ' + web_txt : '') + '</div>' : '') +
+      '<div class="pp-valid">' + new Date().toLocaleDateString(isES ? 'es-ES' : 'en-GB') + '</div>' +
     '</div>');
 
     // ═══ PAGE 2: EXECUTIVE SUMMARY ═══
     page('<div class="pp-body">' +
       '<div class="executive-summary">' +
-      '<p>' + (isES ? 'Todos los datos en un solo ordenador, sin backup ni protección. Tres niveles de protección diseñados específicamente.' : 'All company data lives on a single computer, with no backup or protection. Three tiers of protection designed specifically for your firm.') + '</p>' +
+      '<p>' + (isES ? 'Basado en su situación actual, hemos diseñado tres niveles de protección para ' + co + '.' : 'Based on your current setup, we have designed three protection tiers for ' + co + '.') + '</p>' +
+      (state_txt ? '<p style="margin-top:10px;font-size:11px;color:#666;"><strong>' + (isES ? 'Situación actual:' : 'Current setup:') + '</strong> ' + state_txt + '</p>' : '') +
       '</div>' +
 
       // Risk Box
