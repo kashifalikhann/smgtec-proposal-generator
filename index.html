@@ -1,0 +1,1519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SMGTEC Proposal Generator</title>
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-NH9SQDQM');</script>
+<!-- End Google Tag Manager -->
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0a0a;
+  --bg-elevated: #111111;
+  --bg-card: #161616;
+  --bg-input: #1a1a1a;
+  --border: #2a2a2a;
+  --border-focus: #DEDBC8;
+  --gold: #DEDBC8;
+  --gold-dim: #C4B49A;
+  --gold-dark: #8a7d66;
+  --text: #F5F5F0;
+  --text-secondary: #999999;
+  --text-muted: #666666;
+  --red: #CC3333;
+  --green: #4CAF50;
+  --radius: 8px;
+  --radius-lg: 12px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Inter', -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+.serif { font-family: 'Instrument Serif', serif; }
+
+/* HEADER */
+.header {
+  border-bottom: 1px solid var(--border);
+  padding: 20px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  background: var(--bg);
+  z-index: 100;
+}
+
+.header-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.header-logo {
+  width: 36px;
+  height: 36px;
+  background: var(--gold);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--bg);
+}
+
+.header-title {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.header-subtitle {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.lang-toggle {
+  display: flex;
+  background: var(--bg-elevated);
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.lang-btn {
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 500;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.lang-btn.active {
+  background: var(--gold);
+  color: var(--bg);
+}
+
+.mode-toggle {
+  display: flex;
+  background: var(--bg-elevated);
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.mode-btn {
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 500;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.mode-btn.active {
+  background: var(--gold);
+  color: var(--bg);
+}
+
+/* MAIN LAYOUT */
+.main {
+  display: grid;
+  grid-template-columns: 420px 1fr;
+  min-height: calc(100vh - 73px);
+}
+
+/* SIDEBAR / FORM */
+.sidebar {
+  border-right: 1px solid var(--border);
+  padding: 32px 28px;
+  overflow-y: auto;
+  max-height: calc(100vh - 73px);
+  background: var(--bg-elevated);
+}
+
+.form-section {
+  margin-bottom: 28px;
+}
+
+.form-section-title {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--gold-dim);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.form-section-title::before {
+  content: '';
+  width: 3px;
+  height: 12px;
+  background: var(--gold);
+  border-radius: 2px;
+}
+
+.form-group {
+  margin-bottom: 14px;
+}
+
+.form-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+}
+
+.form-label .optional {
+  color: var(--text-muted);
+  font-weight: 400;
+  font-size: 11px;
+}
+
+.form-input, .form-select {
+  width: 100%;
+  padding: 10px 14px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-size: 13px;
+  font-family: inherit;
+  transition: border-color 0.2s;
+  outline: none;
+}
+
+.form-input:focus, .form-select:focus {
+  border-color: var(--gold);
+}
+
+.form-input::placeholder {
+  color: var(--text-muted);
+}
+
+.form-select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23666' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 36px;
+  cursor: pointer;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.form-number {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.form-number-btn {
+  width: 32px;
+  height: 36px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.form-number-btn:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+.form-number-input {
+  width: 60px;
+  text-align: center;
+  padding: 8px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 600;
+  outline: none;
+}
+
+.form-number-input:focus {
+  border-color: var(--gold);
+}
+
+/* SCRAPE STATUS */
+.scrape-status {
+  padding: 10px 14px;
+  border-radius: var(--radius);
+  font-size: 12px;
+  margin-top: 8px;
+  display: none;
+}
+
+.scrape-status.loading {
+  display: block;
+  background: rgba(222, 219, 200, 0.05);
+  border: 1px solid var(--gold-dark);
+  color: var(--gold-dim);
+}
+
+.scrape-status.success {
+  display: block;
+  background: rgba(76, 175, 80, 0.08);
+  border: 1px solid var(--green);
+  color: var(--green);
+}
+
+.scrape-status.error {
+  display: block;
+  background: rgba(204, 51, 51, 0.08);
+  border: 1px solid var(--red);
+  color: var(--red);
+}
+
+.scrape-result {
+  margin-top: 10px;
+  padding: 12px;
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  font-size: 12px;
+  display: none;
+}
+
+.scrape-result.visible {
+  display: block;
+}
+
+.scrape-result-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.scrape-result-item:last-child {
+  border-bottom: none;
+}
+
+.scrape-result-label {
+  color: var(--text-muted);
+}
+
+.scrape-result-value {
+  color: var(--text);
+  font-weight: 500;
+}
+
+/* GENERATE BUTTON */
+.generate-btn {
+  width: 100%;
+  padding: 14px;
+  background: var(--gold);
+  color: var(--bg);
+  border: none;
+  border-radius: var(--radius);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 8px;
+  font-family: inherit;
+  letter-spacing: 0.3px;
+}
+
+.generate-btn:hover {
+  background: #e8e3d0;
+  transform: translateY(-1px);
+}
+
+.generate-btn:active {
+  transform: translateY(0);
+}
+
+.generate-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* PROPOSAL PREVIEW */
+.preview {
+  padding: 40px;
+  overflow-y: auto;
+  max-height: calc(100vh - 73px);
+}
+
+.preview-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-height: 400px;
+  text-align: center;
+  color: var(--text-muted);
+}
+
+.preview-empty-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+  opacity: 0.3;
+}
+
+.preview-empty h3 {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+.preview-empty p {
+  font-size: 13px;
+  max-width: 300px;
+}
+
+/* PROPOSAL DOCUMENT */
+.proposal {
+  max-width: 800px;
+  margin: 0 auto;
+  display: none;
+}
+
+.proposal.visible {
+  display: block;
+}
+
+.proposal-page {
+  background: white;
+  color: #1a1a1a;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+}
+
+/* PROPOSAL COVER */
+.proposal-cover {
+  background: #0a0a0a;
+  color: #DEDBC8;
+  padding: 60px 48px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.proposal-cover::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -20%;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(222,219,200,0.03) 0%, transparent 70%);
+  border-radius: 50%;
+}
+
+.proposal-cover-logo {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 32px;
+  position: relative;
+}
+
+.proposal-cover-title {
+  font-family: 'Instrument Serif', serif;
+  font-size: 36px;
+  font-weight: 400;
+  line-height: 1.2;
+  margin-bottom: 12px;
+  position: relative;
+}
+
+.proposal-cover-subtitle {
+  font-size: 14px;
+  color: #999;
+  margin-bottom: 32px;
+  position: relative;
+}
+
+.proposal-cover-client {
+  font-size: 13px;
+  color: #888;
+  position: relative;
+}
+
+.proposal-cover-client strong {
+  color: #DEDBC8;
+  font-weight: 600;
+}
+
+.proposal-cover-valid {
+  font-size: 11px;
+  color: #666;
+  margin-top: 24px;
+  position: relative;
+}
+
+/* PROPOSAL BODY */
+.proposal-body {
+  padding: 48px;
+}
+
+.proposal-section {
+  margin-bottom: 40px;
+}
+
+.proposal-section-title {
+  font-family: 'Instrument Serif', serif;
+  font-size: 22px;
+  font-weight: 400;
+  color: #0a0a0a;
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #DEDBC8;
+}
+
+.proposal-section-subtitle {
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 20px;
+  line-height: 1.6;
+}
+
+/* EXECUTIVE SUMMARY */
+.executive-summary {
+  background: #f8f7f4;
+  border-left: 4px solid #DEDBC8;
+  padding: 20px 24px;
+  border-radius: 0 var(--radius) var(--radius) 0;
+  margin-bottom: 32px;
+}
+
+.executive-summary h4 {
+  font-size: 13px;
+  font-weight: 600;
+  color: #0a0a0a;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.executive-summary p {
+  font-size: 13px;
+  color: #444;
+  line-height: 1.7;
+}
+
+/* RISK BOX */
+.risk-box {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: var(--radius);
+  padding: 20px 24px;
+  margin-bottom: 32px;
+}
+
+.risk-box h4 {
+  font-size: 13px;
+  font-weight: 600;
+  color: #991b1b;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.risk-box ul {
+  list-style: none;
+  padding: 0;
+}
+
+.risk-box li {
+  font-size: 12px;
+  color: #7f1d1d;
+  padding: 4px 0;
+  padding-left: 16px;
+  position: relative;
+}
+
+.risk-box li::before {
+  content: '\2192';
+  position: absolute;
+  left: 0;
+  color: #dc2626;
+}
+
+/* TIER CARDS */
+.tier-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.tier-card {
+  border: 2px solid #e5e5e5;
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  position: relative;
+  transition: all 0.2s;
+}
+
+.tier-card.recommended {
+  border-color: #DEDBC8;
+  background: #faf9f6;
+}
+
+.tier-badge {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #DEDBC8;
+  color: #0a0a0a;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 12px;
+  border-radius: 10px;
+  letter-spacing: 0.5px;
+}
+
+.tier-card-name {
+  font-family: 'Instrument Serif', serif;
+  font-size: 18px;
+  font-weight: 400;
+  color: #0a0a0a;
+  margin-bottom: 4px;
+  padding-top: 12px;
+}
+
+.tier-card-tagline {
+  font-size: 11px;
+  color: #888;
+  margin-bottom: 16px;
+}
+
+.tier-card-price {
+  margin-bottom: 16px;
+}
+
+.tier-card-price-amount {
+  font-size: 28px;
+  font-weight: 700;
+  color: #0a0a0a;
+}
+
+.tier-card-price-period {
+  font-size: 12px;
+  color: #888;
+}
+
+.tier-card-onetime {
+  font-size: 11px;
+  color: #999;
+  margin-bottom: 16px;
+}
+
+.tier-card-features {
+  list-style: none;
+  padding: 0;
+}
+
+.tier-card-features li {
+  font-size: 12px;
+  color: #444;
+  padding: 5px 0;
+  padding-left: 20px;
+  position: relative;
+  line-height: 1.5;
+}
+
+.tier-card-features li.included::before {
+  content: '\2713';
+  position: absolute;
+  left: 0;
+  color: #4CAF50;
+  font-weight: 700;
+}
+
+.tier-card-features li.not-included {
+  color: #bbb;
+}
+
+.tier-card-features li.not-included::before {
+  content: '\2014';
+  position: absolute;
+  left: 0;
+  color: #ccc;
+}
+
+/* COMPARISON TABLE */
+.comparison-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 32px;
+  font-size: 12px;
+}
+
+.comparison-table th {
+  background: #0a0a0a;
+  color: #DEDBC8;
+  padding: 12px 16px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.comparison-table th:last-child {
+  text-align: center;
+}
+
+.comparison-table td {
+  padding: 10px 16px;
+  border-bottom: 1px solid #eee;
+  color: #444;
+}
+
+.comparison-table td:last-child {
+  text-align: center;
+}
+
+.comparison-table tr:nth-child(even) td {
+  background: #faf9f6;
+}
+
+.comparison-table .check {
+  color: #4CAF50;
+  font-weight: 700;
+}
+
+.comparison-table .dash {
+  color: #ccc;
+}
+
+/* ROI SECTION */
+.roi-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.roi-card {
+  padding: 20px 24px;
+  border-radius: var(--radius);
+}
+
+.roi-card.without {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+}
+
+.roi-card.with {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+}
+
+.roi-card h4 {
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.roi-card.without h4 { color: #991b1b; }
+.roi-card.with h4 { color: #166534; }
+
+.roi-card ul {
+  list-style: none;
+  padding: 0;
+}
+
+.roi-card li {
+  font-size: 12px;
+  padding: 3px 0;
+}
+
+.roi-card.without li { color: #7f1d1d; }
+.roi-card.with li { color: #166534; }
+
+/* ADD-ONS */
+.addons {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+.addon-card {
+  border: 1px solid #e5e5e5;
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.addon-info h5 {
+  font-size: 13px;
+  font-weight: 600;
+  color: #0a0a0a;
+  margin-bottom: 2px;
+}
+
+.addon-info p {
+  font-size: 11px;
+  color: #888;
+}
+
+.addon-price {
+  text-align: right;
+}
+
+.addon-price-amount {
+  font-size: 16px;
+  font-weight: 700;
+  color: #0a0a0a;
+}
+
+.addon-price-period {
+  font-size: 10px;
+  color: #999;
+}
+
+/* NEXT STEPS */
+.next-steps {
+  background: #0a0a0a;
+  color: #DEDBC8;
+  padding: 32px;
+  border-radius: var(--radius-lg);
+  text-align: center;
+}
+
+.next-steps h4 {
+  font-family: 'Instrument Serif', serif;
+  font-size: 20px;
+  font-weight: 400;
+  margin-bottom: 8px;
+}
+
+.next-steps p {
+  font-size: 13px;
+  color: #999;
+  margin-bottom: 20px;
+}
+
+.next-steps-btn {
+  display: inline-block;
+  padding: 12px 32px;
+  background: #DEDBC8;
+  color: #0a0a0a;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.next-steps-btn:hover {
+  background: #e8e3d0;
+}
+
+/* INTERNAL BRIEFING */
+.internal-brief {
+  max-width: 800px;
+  margin: 0 auto;
+  display: none;
+}
+
+.internal-brief.visible {
+  display: block;
+}
+
+.internal-header {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 24px 28px;
+  margin-bottom: 24px;
+}
+
+.internal-header h2 {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--gold);
+  margin-bottom: 4px;
+}
+
+.internal-header p {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.internal-section {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 24px 28px;
+  margin-bottom: 16px;
+}
+
+.internal-section h3 {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--gold-dim);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+.cost-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.cost-table th {
+  text-align: left;
+  padding: 8px 12px;
+  background: var(--bg-elevated);
+  color: var(--gold-dim);
+  font-weight: 600;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.cost-table td {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-secondary);
+}
+
+.cost-table tr:last-child td {
+  border-bottom: none;
+}
+
+.cost-table .number {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.cost-table .total td {
+  font-weight: 600;
+  color: var(--text);
+  border-top: 2px solid var(--gold-dark);
+}
+
+.margin-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.margin-good {
+  background: rgba(76, 175, 80, 0.15);
+  color: var(--green);
+}
+
+.margin-ok {
+  background: rgba(222, 219, 200, 0.15);
+  color: var(--gold-dim);
+}
+
+.margin-low {
+  background: rgba(204, 51, 51, 0.15);
+  color: var(--red);
+}
+
+/* PRINT STYLES */
+@media print {
+  .header, .sidebar { display: none !important; }
+  .main { display: block; }
+  .preview { padding: 0; max-height: none; overflow: visible; }
+  .proposal-page { box-shadow: none; border-radius: 0; page-break-after: always; }
+  .internal-brief { display: none !important; }
+}
+
+/* RESPONSIVE */
+@media (max-width: 1024px) {
+  .main { grid-template-columns: 1fr; }
+  .sidebar { border-right: none; border-bottom: 1px solid var(--border); max-height: none; }
+  .tier-cards { grid-template-columns: 1fr; }
+  .roi-section { grid-template-columns: 1fr; }
+  .addons { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NH9SQDQM"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-brand">
+    <div class="header-logo">SM</div>
+    <div>
+      <div class="header-title">SMGTEC Proposal Generator</div>
+      <div class="header-subtitle">Internal Tool v1.0</div>
+    </div>
+  </div>
+  <div class="header-actions">
+    <div class="lang-toggle">
+      <button class="lang-btn active" onclick="setLang('en')">EN</button>
+      <button class="lang-btn" onclick="setLang('es')">ES</button>
+    </div>
+    <div class="mode-toggle">
+      <button class="mode-btn active" onclick="setMode('client')" id="modeClient">Client</button>
+      <button class="mode-btn" onclick="setMode('internal')" id="modeInternal">Internal</button>
+    </div>
+  </div>
+</header>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+
+    <div class="form-section">
+      <div class="form-section-title" data-i18n="company">Company Information</div>
+      <div class="form-group">
+        <label class="form-label" data-i18n="companyName">Company Name</label>
+        <input class="form-input" id="companyName" placeholder="N&B Legal" value="N&B Legal">
+      </div>
+      <div class="form-group">
+        <label class="form-label" data-i18n="website">Website <span class="optional">(optional — we'll scrape it)</span></label>
+        <div style="display:flex;gap:8px;">
+          <input class="form-input" id="website" placeholder="https://nb-legal.com" value="https://nb-legal.com" style="flex:1;">
+          <button class="form-number-btn" onclick="scrapeWebsite()" title="Scrape website" style="flex-shrink:0;width:auto;padding:0 12px;font-size:12px;">Scrape</button>
+        </div>
+      </div>
+      <div class="scrape-status" id="scrapeStatus"></div>
+      <div class="form-group">
+        <label class="form-label" data-i18n="contactName">Contact Name</label>
+        <input class="form-input" id="contactName" placeholder="Syed Zeeshan Rizvi" value="Syed Zeeshan Rizvi">
+      </div>
+      <div class="form-group">
+        <label class="form-label" data-i18n="industry">Industry</label>
+        <select class="form-select" id="industry">
+          <option value="legal" selected>Legal Services</option>
+          <option value="healthcare">Healthcare / Dental</option>
+          <option value="finance">Finance / Accounting</option>
+          <option value="retail">Retail / E-commerce</option>
+          <option value="manufacturing">Manufacturing</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label" data-i18n="location">Location</label>
+        <select class="form-select" id="location">
+          <option value="spain" selected>Spain</option>
+          <option value="eu">EU (other)</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="scrape-result" id="scrapeResult">
+      <div class="scrape-result-item">
+        <span class="scrape-result-label">Company:</span>
+        <span class="scrape-result-value" id="scrapeCompany">—</span>
+      </div>
+      <div class="scrape-result-item">
+        <span class="scrape-result-label">Services:</span>
+        <span class="scrape-result-value" id="scrapeServices">—</span>
+      </div>
+      <div class="scrape-result-item">
+        <span class="scrape-result-label">Language:</span>
+        <span class="scrape-result-value" id="scrapeLang">—</span>
+      </div>
+      <div class="scrape-result-item">
+        <span class="scrape-result-label">IT Maturity:</span>
+        <span class="scrape-result-value" id="scrapeMaturity">—</span>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-title" data-i18n="infrastructure">IT Infrastructure</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label" data-i18n="workstations">Workstations</label>
+          <div class="form-number">
+            <button class="form-number-btn" onclick="adjustNum('workstations', -1)">−</button>
+            <input class="form-number-input" id="workstations" value="10" min="1" max="100">
+            <button class="form-number-btn" onclick="adjustNum('workstations', 1)">+</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" data-i18n="laptops">Laptops</label>
+          <div class="form-number">
+            <button class="form-number-btn" onclick="adjustNum('laptops', -1)">−</button>
+            <input class="form-number-input" id="laptops" value="0" min="0" max="100">
+            <button class="form-number-btn" onclick="adjustNum('laptops', 1)">+</button>
+          </div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label" data-i18n="servers">Existing Servers</label>
+          <div class="form-number">
+            <button class="form-number-btn" onclick="adjustNum('servers', -1)">−</button>
+            <input class="form-number-input" id="servers" value="0" min="0" max="20">
+            <button class="form-number-btn" onclick="adjustNum('servers', 1)">+</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" data-i18n="budget">Budget Range</label>
+          <select class="form-select" id="budget">
+            <option value="tight">Tight (&lt;€500/mo)</option>
+            <option value="moderate" selected>Moderate (€500-1000)</option>
+            <option value="flexible">Flexible (&gt;€1000)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-title" data-i18n="currentState">Current IT State</div>
+      <div class="form-group">
+        <label class="form-label" data-i18n="currentEmail">Current Email</label>
+        <select class="form-select" id="currentEmail">
+          <option value="consumer" selected>Consumer (Gmail, etc.)</option>
+          <option value="m365">Microsoft 365</option>
+          <option value="google">Google Workspace</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label" data-i18n="currentBackup">Current Backup</label>
+        <select class="form-select" id="currentBackup">
+          <option value="none" selected>None</option>
+          <option value="local">Local drive</option>
+          <option value="cloud">Cloud (partial)</option>
+          <option value="full">Full backup solution</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label" data-i18n="currentAV">Current Antivirus</label>
+        <select class="form-select" id="currentAV">
+          <option value="none" selected>None</option>
+          <option value="defender">Windows Defender</option>
+          <option value="consumer">Consumer AV</option>
+          <option value="enterprise">Enterprise AV</option>
+        </select>
+      </div>
+    </div>
+
+    <button class="generate-btn" onclick="generateProposal()" id="generateBtn" data-i18n="generate">
+      Generate Proposal
+    </button>
+
+  </aside>
+
+  <!-- PREVIEW -->
+  <main class="preview">
+
+    <div class="preview-empty" id="emptyState">
+      <div class="preview-empty-icon">📋</div>
+      <h3 data-i18n="emptyTitle">No proposal yet</h3>
+      <p data-i18n="emptyDesc">Fill in the company details on the left and click Generate Proposal.</p>
+    </div>
+
+    <div class="proposal" id="clientProposal">
+    </div>
+
+    <div class="internal-brief" id="internalBrief">
+    </div>
+
+  </main>
+</div>
+
+<script>
+// SMGTEC Proposal Generator — Complete Engine
+// All costs from SMGTEC plan + verified EU pricing
+
+var PRICING = {
+  m365_bp:       { cost: 18.70, sell: 22.50,  model: 'user' },
+  msp360:        { cost: 5.00,  sell: 8.33,   model: 'device' },
+  b2_storage:    { cost: 10,    sell: 0,      model: 'fixed' },
+  dropsuite:     { cost: 3.00,  sell: 4.50,   model: 'user' },
+  fortigate_60f: { cost: 735,   sell: 1290,   model: 'fixed' },
+  fortigate_utp: { cost: 503,   sell: 0,      model: 'fixed' },
+  solarwinds:    { cost: 20,    sell: 0,      model: 'fixed' },
+  sentinelone:  { cost: 2.50,  sell: 5.00,   model: 'endpoint' },
+  dell_t150:     { cost: 800,   sell: 1200,   model: 'fixed' },
+  datto_siris5:  { cost: 1500,  sell: 2400,   model: 'fixed' },
+  apc_ups:       { cost: 200,   sell: 350,    model: 'fixed' },
+  voip_3cx:      { cost: 12,    sell: 20,     model: 'user' },
+  labor_hour:    20
+};
+
+var INDUSTRIES = {
+  legal: {
+    nameEN: 'Legal', nameES: 'Legal',
+    risks: ['Client confidentiality breach — up to €10M LOPDGD fines',
+            'Email contains case evidence — must be backed up',
+            'Unauthorized access — personal liability for partners']
+  },
+  healthcare: {
+    nameEN: 'Healthcare', nameES: 'Sanidad',
+    risks: ['Patient data — strict confidentiality',
+            'Medical records must be retained 5+ years',
+            'Unauthorized access — criminal liability']
+  },
+  finance: {
+    nameEN: 'Finance', nameES: 'Finanzas',
+    risks: ['Financial data — NIS2 compliance required',
+            'Transaction records — audit trail mandatory',
+            'Client asset data — enhanced protection']
+  },
+  retail: {
+    nameEN: 'Retail', nameES: 'Retail',
+    risks: ['Customer payment data — PCI-DSS requirements',
+            'Personal data processing — consent management',
+            'E-commerce uptime — revenue critical']
+  },
+  other: {
+    nameEN: 'Professional Services', nameES: 'Servicios Profesionales',
+    risks: ['Client data protection — LOPDGD compliance',
+            'Professional liability — data breach exposure',
+            'Reputational damage — client trust depends on security']
+  }
+};
+
+// I18N
+var LANG = 'en';
+var I18N = {
+  en: { company:'Company Information', companyName:'Company Name', website:'Website', contactName:'Contact Name',
+        industry:'Industry', location:'Location', infrastructure:'IT Infrastructure', workstations:'Workstations',
+        laptops:'Laptops', servers:'Existing Servers', budget:'Budget Range', currentState:'Current IT State',
+        currentEmail:'Current Email', currentBackup:'Current Backup', currentAV:'Current Antivirus',
+        generate:'Generate Proposal', generating:'Generating...', emptyTitle:'No proposal yet',
+        emptyDesc:'Fill in the company details and click Generate Proposal.',
+        proposalTitle:'Infrastructure Proposal', proposalSubtitle:'Data Protection + Security + Compliance',
+        preparedFor:'Prepared for', validFor:'Valid for 30 days from',
+        executiveSummary:'Executive Summary', riskAssessment:'Risk Assessment', recommended:'RECOMMENDED',
+        oneTime:'One-time', perMonth:'/month', roi:'The Math That Matters',
+        withoutProtection:'Without Protection', withProtection:'With Protection',
+        addOns:'Available Add-Ons', nextStep:'Next Step',
+        nextStepText:'One decision. Sign. We build. You\'re protected.',
+        internalTitle:'Internal Briefing', costBreakdown:'Cost Breakdown', module:'Module',
+        ourCost:'Our Cost', clientPays:'Client Pays', margin:'Margin', total:'Total', profit:'Profit' },
+  es: { company:'Información de la Empresa', companyName:'Nombre', website:'Sitio Web', contactName:'Contacto',
+        industry:'Industria', location:'Ubicación', infrastructure:'Infraestructura IT', workstations:'Ordenadores',
+        laptops:'Portátiles', servers:'Servidores', budget:'Presupuesto', currentState:'Estado Actual',
+        currentEmail:'Email Actual', currentBackup:'Backup Actual', currentAV:'Antivirus Actual',
+        generate:'Generar Propuesta', generating:'Generando...', emptyTitle:'Aún no hay propuesta',
+        emptyDesc:'Complete los datos y haga clic en Generar Propuesta.',
+        proposalTitle:'Propuesta de Infraestructura', proposalSubtitle:'Protección de Datos + Seguridad',
+        preparedFor:'Preparado para', validFor:'Válido por 30 días desde',
+        executiveSummary:'Resumen Ejecutivo', riskAssessment:'Evaluación de Riesgos', recommended:'RECOMENDADO',
+        oneTime:'Pago único', perMonth:'/mes', roi:'Las Cuentas',
+        withoutProtection:'Sin Protección', withProtection:'Con Protección',
+        addOns:'Módulos Adicionales', nextStep:'Siguiente Paso',
+        nextStepText:'Una decisión. Firma. Construimos. Estás protegido.',
+        internalTitle:'Briefing Interno', costBreakdown:'Desglose de Costes', module:'Módulo',
+        ourCost:'Nuestro Coste', clientPays:'Cliente Paga', margin:'Margen', total:'Total', profit:'Beneficio' }
+};
+function t(k) { return I18N[LANG][k] || k; }
+
+function setLang(l) {
+  LANG = l;
+  document.querySelectorAll('.lang-btn').forEach(function(b) { b.classList.toggle('active', b.textContent.toLowerCase() === l); });
+  updateLabels();
+}
+function setMode(m) {
+  document.getElementById('modeClient').classList.toggle('active', m === 'client');
+  document.getElementById('modeInternal').classList.toggle('active', m === 'internal');
+  document.getElementById('clientProposal').style.display = m === 'client' ? 'block' : 'none';
+  document.getElementById('internalBrief').style.display = m === 'internal' ? 'block' : 'none';
+}
+function updateLabels() {
+  document.querySelectorAll('[data-i18n]').forEach(function(el) { el.textContent = t(el.getAttribute('data-i18n')); });
+  document.getElementById('generateBtn').textContent = t('generate');
+}
+
+function adjustNum(id, d) {
+  var el = document.getElementById(id);
+  el.value = Math.max(0, (parseInt(el.value) || 0) + d);
+}
+
+function scrapeWebsite() {
+  var url = document.getElementById('website').value.trim();
+  if (!url) return;
+  var status = document.getElementById('scrapeStatus');
+  status.className = 'scrape-status loading';
+  status.textContent = LANG === 'en' ? 'Scraping...' : 'Analizando...';
+  fetch('/.netlify/functions/scrape', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ url: url })
+  }).then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (!data.success) throw new Error(data.error);
+      document.getElementById('scrapeCompany').textContent = data.parsed.companyName || '—';
+      document.getElementById('scrapeServices').textContent = data.parsed.services || '—';
+      document.getElementById('scrapeLang').textContent = data.parsed.language || '—';
+      document.getElementById('scrapeMaturity').textContent = data.parsed.maturity || '—';
+      document.getElementById('scrapeResult').classList.add('visible');
+      if (data.parsed.companyName) document.getElementById('companyName').value = data.parsed.companyName;
+      if (data.parsed.contactName) document.getElementById('contactName').value = data.parsed.contactName;
+      if (data.parsed.industry) document.getElementById('industry').value = data.parsed.industry;
+      status.className = 'scrape-status success';
+      status.textContent = LANG === 'en' ? 'Website analyzed' : 'Sitio analizado';
+    }).catch(function() {
+      status.className = 'scrape-status error';
+      status.textContent = LANG === 'en' ? 'Scrape failed. Fill manually.' : 'Error. Complete manualmente.';
+    });
+}
+
+// CALCULATE TIERS
+function calcTiers() {
+  var users = (parseInt(document.getElementById('workstations').value) || 0) +
+              (parseInt(document.getElementById('laptops').value) || 0);
+  var devices = users + (parseInt(document.getElementById('servers').value) || 0);
+  var endpoints = devices;
+  var budget = document.getElementById('budget').value;
+  var industry = document.getElementById('industry').value;
+  var rules = INDUSTRIES[industry] || INDUSTRIES.other;
+
+  var m365_mo = PRICING.m365_bp.cost * users;
+  var m365_sell = PRICING.m365_bp.sell * users;
+  var backup_mo = PRICING.msp360.cost * devices + PRICING.b2_storage.cost;
+  var backup_sell = PRICING.msp360.sell * devices;
+  var drop_mo = PRICING.dropsuite.cost * users;
+  var drop_sell = PRICING.dropsuite.sell * users;
+  var labor1 = PRICING.labor_hour * 3;
+  var labor2 = PRICING.labor_hour * 5;
+  var labor3 = PRICING.labor_hour * 10;
+
+  var t1 = {
+    nameEN: 'Essential', nameES: 'Esencial',
+    oneTime: 299, monthly: Math.round(m365_sell + backup_sell + drop_sell),
+    ourMo: Math.round(m365_mo + backup_mo + drop_mo + labor1),
+    ourOneTime: 120,
+    features: [
+      'M365 BP (' + users + ' users) — email, MFA, OneDrive, Defender',
+      'Cloud backup (' + devices + ' devices) — encrypted, off-site',
+      'Email backup (' + users + ' mailboxes) — Dropsuite, 1yr retention',
+      'Data Processing Agreement (DPA)',
+      'Cyber liability insurance (€2M)',
+      'Client portal + monthly report'
+    ],
+    missing: ['No firewall upgrade', 'No 24/7 monitoring', 'No server', 'No DR']
+  };
+
+  var fort_mo = PRICING.fortigate_utp.cost / 12;
+  var t2 = {
+    nameEN: 'Professional', nameES: 'Profesional',
+    oneTime: t1.oneTime + PRICING.fortigate_60f.sell,
+    monthly: t1.monthly + Math.round(fort_mo + PRICING.solarwinds.cost),
+    ourMo: t1.ourMo + Math.round(fort_mo + PRICING.solarwinds.cost + labor2),
+    ourOneTime: t1.ourOneTime + PRICING.fortigate_60f.cost,
+    features: t1.features.concat([
+      'FortiGate 60F + UTP — AI threat intel, VPN, guest Wi-Fi',
+      '24/7 RMM monitoring — auto patching, daily checks',
+      'Quarterly Business Review (on-site)',
+      'Continual Improvement Register'
+    ]),
+    missing: ['No centralized server', 'No disaster recovery', 'No advanced EDR']
+  };
+
+  var sent_mo = PRICING.sentinelone.sell * endpoints;
+  var sent_cost = PRICING.sentinelone.cost * endpoints;
+  var t3 = {
+    nameEN: 'Enterprise', nameES: 'Empresarial',
+    oneTime: t2.oneTime + PRICING.dell_t150.sell + PRICING.datto_siris5.sell + PRICING.apc_ups.sell + 1000,
+    monthly: t2.monthly + sent_mo + 300,
+    ourMo: t2.ourMo + sent_cost + labor3 + 100,
+    ourOneTime: t2.ourOneTime + PRICING.dell_t150.cost + PRICING.datto_siris5.cost + PRICING.apc_ups.cost + 800,
+    features: t2.features.concat([
+      'Dell T150 Server + RAID-1 — centralized file storage',
+      'Datto SIRIS 5 (2TB SSD) — instant cloud virtualization',
+      'APC UPS 1500VA — 30min runtime',
+      'SentinelOne Complete (' + endpoints + ' endpoints) — AI EDR',
+      'Annual compliance review'
+    ]),
+    missing: ['Everything included']
+  };
+
+  [t1, t2, t3].forEach(function(t) {
+    t.year1Rev = t.oneTime + t.monthly * 12;
+    t.year1Cost = t.ourOneTime + t.ourMo * 12;
+    t.profit = t.year1Rev - t.year1Cost;
+    t.margin = t.year1Rev > 0 ? Math.round(t.profit / t.year1Rev * 100) : 0;
+  });
+
+  return { t1: t1, t2: t2, t3: t3, users: users, devices: devices, rules: rules, budget: budget };
+}
+
+// GENERATE — uses chunked DOM insertion to prevent freeze
+function generateProposal() {
+  var btn = document.getElementById('generateBtn');
+  btn.disabled = true;
+  btn.textContent = t('generating');
+
+  setTimeout(function() {
+    var data = calcTiers();
+    var isES = LANG === 'es';
+    var company = document.getElementById('companyName').value || 'Client';
+    var contact = document.getElementById('contactName').value || '';
+    var recommended = data.budget === 'flexible' ? 3 : data.budget === 'tight' ? 1 : 2;
+
+    // Build Client Proposal — chunked
+    var cp = document.getElementById('clientProposal');
+    cp.innerHTML = '';
+    cp.style.display = 'block';
+    document.getElementById('internalBrief').style.display = 'none';
+    document.getElementById('emptyState').style.display = 'none';
+
+    // Helper: create page from HTML string
+    function addPage(html) {
+      var d = document.createElement('div');
+      d.className = 'proposal-page';
+      d.innerHTML = html;
+      cp.appendChild(d);
+    }
+
+    // Page 1: Cover
+    addPage('<div class="proposal-cover">' +
+      '<div class="proposal-cover-logo">SMGTEC SL</div>' +
+      '<h1 class="proposal-cover-title">' + t('proposalTitle') + '</h1>' +
+      '<div class="proposal-cover-subtitle">' + t('proposalSubtitle') + '</div>' +
+      '<div class="proposal-cover-client"><strong>' + t('preparedFor') + ':</strong> ' + company + (contact ? ' — ' + contact : '') + '</div>' +
+      '<div class="proposal-cover-valid">' + t('validFor') + ' ' + new Date().toLocaleDateString() + '</div>' +
+    '</div>');
+
+    // Page 2: Summary + Risk
+    var sumHTML = '<div class="proposal-body">' +
+      '<div class="proposal-section"><h2 class="proposal-section-title">' + t('executiveSummary') + '</h2>' +
+      '<div class="executive-summary"><h4>' + company + '</h4>' +
+      '<p>' + (isES ? company + ' es un ' + data.rules.nameES + ' en Barcelona. Todos los datos están en un solo ordenador sin protección.' :
+                  company + ' is a ' + data.rules.nameEN + ' firm in Barcelona. All data lives on a single computer with no protection.') +
+      '</p></div></div>' +
+      '<div class="proposal-section"><h2 class="proposal-section-title">' + t('riskAssessment') + '</h2>' +
+      '<div class="risk-box"><h4>' + (isES ? 'Riesgos Actuales' : 'Current Risks') + '</h4><ul>' +
+      data.rules.risks.map(function(r) { return '<li>' + r + '</li>'; }).join('') +
+      '<li>' + (isES ? 'Multas LOPDGD: hasta €10M' : 'LOPDGD fines: up to €10M') + '</li>' +
+      '</ul></div></div></div>';
+    addPage(sumHTML);
+
+    // Page 3: Tier Cards
+    var cardsHTML = '<div class="proposal-body"><div class="proposal-section">' +
+      '<h2 class="proposal-section-title">' + (isES ? 'Tres Niveles de Protección' : 'Three Protection Tiers') + '</h2>' +
+      '<div class="tier-cards">';
+    [data.t1, data.t2, data.t3].forEach(function(tier, i) {
+      var isRec = (i + 1) === recommended;
+      cardsHTML += '<div class="tier-card' + (isRec ? ' recommended' : '') + '">';
+      if (isRec) cardsHTML += '<div style="position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:#DEDBC8;color:#0a0a0a;font-size:10px;font-weight:700;padding:3px 12px;border-radius:10px;">' + t('recommended') + '</div>';
+      cardsHTML += '<div class="tier-card-name">' + (isES ? tier.nameES : tier.nameEN) + '</div>' +
+        '<div class="tier-card-price"><span class="tier-card-price-amount">€' + tier.monthly + '</span> <span class="tier-card-price-period">' + t('perMonth') + '</span></div>' +
+        '<div class="tier-card-onetime">' + t('oneTime') + ': €' + tier.oneTime + '</div>' +
+        '<ul class="tier-card-features">';
+      tier.features.slice(0, 6).forEach(function(f) { cardsHTML += '<li class="included">' + f + '</li>'; });
+      cardsHTML += '</ul></div>';
+    });
+    cardsHTML += '</div></div></div>';
+    addPage(cardsHTML);
+
+    // Page 4: ROI
+    addPage('<div class="proposal-body"><div class="proposal-section">' +
+      '<h2 class="proposal-section-title">' + t('roi') + '</h2>' +
+      '<div class="roi-section">' +
+      '<div class="roi-card without"><h4>' + t('withoutProtection') + '</h4>' +
+      '<ul><li>' + (isES ? 'Recuperación de datos' : 'Data recovery') + ': €2,000 — €10,000</li>' +
+      '<li>' + (isES ? 'Multa LOPDGD' : 'LOPDGD fine') + ': €10,000 — €600,000</li></ul></div>' +
+      '<div class="roi-card with"><h4>' + t('withProtection') + '</h4>' +
+      '<ul><li>' + (isES ? 'Pérdida de datos cero' : 'Zero data loss') + ' ✓</li>' +
+      '<li>' + (isES ? 'Recuperación <1 hora' : 'Recovery <1 hour') + ' ✓</li></ul></div>' +
+      '</div></div></div>');
+
+    // Page 5: Next Step
+    addPage('<div class="proposal-body"><div class="next-steps">' +
+      '<h4>' + t('nextStep') + '</h4><p>' + t('nextStepText') + '</p>' +
+      '<a href="#" class="next-steps-btn" onclick="window.print();return false;">' + (isES ? 'Descargar PDF' : 'Download PDF') + '</a>' +
+      '</div></div>');
+
+    // Build Internal Brief
+    var ib = document.getElementById('internalBrief');
+    ib.innerHTML = '<div class="internal-header"><h2>' + t('internalTitle') + ': ' + company + '</h2></div>';
+
+    function costTable(tier, name) {
+      var html = '<div class="internal-section"><h3>' + t('costBreakdown') + ' — ' + name + '</h3>' +
+        '<table class="cost-table"><thead><tr><th>' + t('module') + '</th><th class="number">' + t('ourCost') + '/mo</th><th class="number">' + t('clientPays') + '/mo</th><th class="number">' + t('margin') + '</th></tr></thead><tbody>' +
+        '<tr><td>All modules + labor</td><td class="number">€' + tier.ourMo + '</td><td class="number">€' + tier.monthly + '</td><td class="number">' + (tier.monthly > 0 ? Math.round((tier.monthly - tier.ourMo) / tier.monthly * 100) : 0) + '%</td></tr>' +
+        '<tr><td>One-time (setup + hardware)</td><td class="number">€' + tier.ourOneTime + '</td><td class="number">€' + tier.oneTime + '</td><td class="number">' + (tier.oneTime > 0 ? Math.round((tier.oneTime - tier.ourOneTime) / tier.oneTime * 100) : 0) + '%</td></tr>' +
+        '<tr class="total"><td>' + t('total') + ' (Year 1)</td><td class="number">€' + tier.year1Cost + '</td><td class="number">€' + tier.year1Rev + '</td><td><span class="margin-badge ' + (tier.margin > 30 ? 'margin-good' : tier.margin > 15 ? 'margin-ok' : 'margin-low') + '">' + tier.margin + '%</span></td></tr>' +
+        '<tr class="total"><td>' + t('profit') + '</td><td class="number" colspan="3" style="text-align:right;">€' + tier.profit + '</td></tr>' +
+        '</tbody></table></div>';
+      ib.insertAdjacentHTML('beforeend', html);
+    }
+    costTable(data.t1, isES ? 'Tier 1: Esencial' : 'Tier 1: Essential');
+    costTable(data.t2, isES ? 'Tier 2: Profesional' : 'Tier 2: Professional');
+    costTable(data.t3, isES ? 'Tier 3: Empresarial' : 'Tier 3: Enterprise');
+
+    btn.disabled = false;
+    btn.textContent = t('generate');
+  }, 50);
+}
+
+// Init
+updateLabels();
+</script>
+</body>
+</html>
+
