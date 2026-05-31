@@ -137,17 +137,21 @@ var LANG = 'en';
 var P = {
   m365:   {c:18.70, s:22.50},
   drop:   {c: 3.00, s: 4.50},
-  msp:    {c: 5.00, s: 8.33},
-  b2:     10,  // fixed monthly
-  forti:  {c: 735, s: 1290},  // 60F hardware
-  utp:    503,  // UTP license 1yr
-  rmm:    20,   // solarwinds allocation
+  msp:    50,
+  b2:     10,
+  forti:  {c: 735, s: 1290},
+  utp:    503,
+  rmm:    20,
   s1:     {c: 2.50, s: 5.00},
-  dell:   {c: 800, s: 1200},
-  datto:  {c:1500, s: 2400},
-  apc:    {c: 200, s: 350},
+  dell:   800,
+  datto:  1500,
+  apc:    200,
   voip:   {c: 12, s: 20},
-  labor:  20    // hourly rate
+  labor:  20,
+  labor_on: 40,
+  T1_ot: 399, T1_mo: 299,
+  T2_ot: 1490, T2_mo: 499,
+  T3_ot: 9490, T3_mo: 1050
 };
 
 // I18N translations
@@ -185,13 +189,13 @@ var T = {
     bud:'Presupuesto', state:'Estado Actual', em:'Email', bk:'Backup',
     gen:'Generar Propuesta', generating:'Generando...',
     empty_t:'Sin propuesta', empty_d:'Complete los datos.',
-    l1:'M365 BP — email, MFA, Conditional Access, Defender',
-    l2:'Backup MSP360 — cifrado, externo',
-    l3:'Backup email (Dropsuite)',
-    l4:'Acuerdo DPA + LOPGDG',
-    l5:'Seguro cibernético (€2M)',
-    l6:'Portal cliente + informe',
-    l7:'Helpdesk remoto',
+    l1:'M365 Business Premium — email, MFA, Conditional Access, Defender',
+    l2:'MSP360 backup cloud — cifrado, inmutable, antiransomware',
+    l3:'Backup email (Dropsuite) — 1 año retención',
+    l4:'Acuerdo DPA + protocolo LOPDGD',
+    l5:'Seguro cibernético (€2M cobertura)',
+    l6:'Portal cliente + informe mensual',
+    l7:'Helpdesk remoto (horario laboral)',
     l8:'FortiGate 60F — IA, IPS, VLAN, VPN',
     l9:'SolarWinds 24/7 RMM — parches automáticos',
     l10:'Revisión Trimestral + Mejora Continua',
@@ -248,52 +252,54 @@ function adj(id, d) {
 function calc() {
   var u = (parseInt(document.getElementById('v_ws').value) || 0)
         + (parseInt(document.getElementById('v_lp').value) || 0);
-  var dev = u + (parseInt(document.getElementById('v_sv').value) || 0);
-  var eps = dev;
+  var eps = u;
   var rules = (function(){
-    var ind = {legal:['Client confidentiality — €10M LOPGDG fines','Email evidence must be backed up','Unauthorized access liability'],healthcare:['Patient data — strict confidentiality','Medical records 5+ years','Criminal liability'],finance:['NIS2 compliance required','Transaction audit trails','Enhanced protection'],retail:['PCI-DSS payment data','Consent management','Uptime critical'],other:['LOPDGDG compliance','Professional liability','Reputational risk']};
+    var ind = {legal:['Client confidentiality — €10M LOPDGD fines','Email evidence must be backed up','Unauthorized access liability'],healthcare:['Patient data — strict confidentiality','Medical records 5+ years','Criminal liability'],finance:['NIS2 compliance required','Transaction audit trails','Enhanced protection'],retail:['PCI-DSS payment data','Consent management','Uptime critical'],other:['LOPDGD compliance','Professional liability','Reputational risk']};
     var k = document.getElementById('f_ind').value;
     return {risks:ind[k]||ind.other};
   })();
 
+  var m365_c = P.m365.c * u;
+  var drop_c = P.drop.c * u;
+  var s1_c = P.s1.c * eps;
+  var forti_mo = P.utp / 12;
+
   // Tier 1 — Essential
-  var t1mo = (P.m365.s * u) + (P.msp.s * dev) + P.b2 + (P.drop.s * u) + (P.labor * 3);
-  var t1ot = 299; // setup fee
-  var t1cm = (P.m365.c * u) + (P.msp.c * dev) + P.b2 + (P.drop.c * u) + (P.labor * 3);
-  var t1ct = 120;
+  var t1_cm = m365_c + P.msp + P.b2 + drop_c + (P.labor * 3);
+  var t1_cm_y1 = m365_c + P.b2 + drop_c + (P.labor * 3);
+  var t1_ct = P.labor_on * 3;
 
   // Tier 2 — Professional (cumulative)
-  var fortiMo = P.utp / 12;
-  var t2mo = t1mo + fortiMo + P.rmm + (P.labor * 2);
-  var t2ot = t1ot + P.forti.s;
-  var t2cm = t1cm + fortiMo + P.rmm + (P.labor * 2);
-  var t2ct = t1ct + P.forti.c;
+  var t2_cm = t1_cm + forti_mo + P.rmm + (P.labor * 2);
+  var t2_cm_y1 = t1_cm_y1 + forti_mo + P.rmm + (P.labor * 2);
+  var t2_ct = P.forti.c + (P.labor_on * 4) + 80;
 
   // Tier 3 — Enterprise (cumulative)
-  var s1mo = P.s1.s * eps, s1mc = P.s1.c * eps;
-  var t3mo = t2mo + s1mo + 300;
-  var t3ot = t2ot + P.dell.s + P.datto.s + P.apc.s + 1000;
-  var t3cm = t2cm + s1mc + (P.labor * 3);
-  var t3ct = t2ct + P.dell.c + P.datto.c + P.apc.c + 800;
+  var t3_cm = t2_cm + s1_c + (P.labor * 3);
+  var t3_cm_y1 = t2_cm_y1 + s1_c + (P.labor * 3);
+  var t3_ct = P.dell + P.forti.c + P.datto + P.apc + (P.labor_on * 16) + 80 + (P.labor_on * 4) + 150;
 
-  [t1mo,t2mo,t3mo,t2ot,t3ot,t1cm,t2cm,t3cm,t1ct,t2ct,t3ct].forEach(function(v,i,a){
-    var target=[t1mo,t2mo,t3mo,t2ot,t3ot,t1cm,t2cm,t3cm,t1ct,t2ct,t3ct];
+  [t1_cm,t2_cm,t3_cm,t1_cm_y1,t2_cm_y1,t3_cm_y1,t1_ct,t2_ct,t3_ct].forEach(function(v,i,a){
+    var target=[t1_cm,t2_cm,t3_cm,t1_cm_y1,t2_cm_y1,t3_cm_y1,t1_ct,t2_ct,t3_ct];
     target[i]=Math.round(v);
-    // reassign to keep variables in sync
-    t1mo=target[0];t2mo=target[1];t3mo=target[2];t2ot=target[3];t3ot=target[4];
-    t1cm=target[5];t2cm=target[6];t3cm=target[7];t1ct=target[8];t2ct=target[9];t3ct=target[10];
+    t1_cm=target[0];t2_cm=target[1];t3_cm=target[2];
+    t1_cm_y1=target[3];t2_cm_y1=target[4];t3_cm_y1=target[5];
+    t1_ct=target[6];t2_ct=target[7];t3_ct=target[8];
   });
 
-  function td(mo,ot,cm,ct){
-    var yr=ot+mo*12, yc=ct+cm*12, p=yr-yc, m=yr>0?Math.round(p/yr*100):0;
-    return{mo:mo,ot:ot,cm:cm,ct:ct,yr:yr,yc:yc,p:p,m:m};
+  function td(ot, mo, cm, ct, cm_y1) {
+    var yr = ot + mo * 12;
+    var yc = ct + cm_y1 * 12;
+    var p = yr - yc;
+    var m = yr > 0 ? Math.round(p / yr * 100) : 0;
+    return { mo: mo, ot: ot, cm: cm, ct: ct, cm_y1: cm_y1, yr: yr, yc: yc, p: p, m: m };
   }
 
   return {
-    t1:td(t1mo,t1ot,t1cm,t1ct),
-    t2:td(t2mo,t2ot,t2cm,t2ct),
-    t3:td(t3mo,t3ot,t3cm,t3ct),
-    u:u, dev:dev, rules:rules
+    t1: td(P.T1_ot, P.T1_mo, t1_cm, t1_ct, t1_cm_y1),
+    t2: td(P.T2_ot, P.T2_mo, t2_cm, t2_ct, t2_cm_y1),
+    t3: td(P.T3_ot, P.T3_mo, t3_cm, t3_ct, t3_cm_y1),
+    u: u, dev: u, rules: rules
   };
 }
 
@@ -420,16 +426,16 @@ function gen() {
     ib.innerHTML = '<h2 style="font-size:16px;font-weight:600;color:#DEDBC8;margin-bottom:4px;">Internal Briefing: ' + co + '</h2>';
 
     function ibTable(t, name) {
-      var mb = t.m > 30 ? 'margin-good' : t.m > 15 ? 'margin-ok' : 'margin-low';
       ib.innerHTML += '<div style="background:#161616;border:1px solid #2a2a2a;border-radius:12px;padding:20px;margin-top:12px;">' +
         '<h3 style="font-size:13px;font-weight:600;color:#C4B49A;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;">' + name + '</h3>' +
         '<table style="width:100%;border-collapse:collapse;font-size:12px;">' +
-        '<thead><tr><th style="text-align:left;padding:8px;background:#111;color:#DEDBC8;">Module</th><th style="text-align:right;padding:8px;background:#111;color:#DEDBC8;">Cost</th><th style="text-align:right;padding:8px;background:#111;color:#DEDBC8;">Price</th><th style="text-align:right;padding:8px;background:#111;color:#DEDBC8;">Margin</th></tr></thead>' +
+        '<thead><tr><th style="text-align:left;padding:8px;background:#111;color:#DEDBC8;">Item</th><th style="text-align:right;padding:8px;background:#111;color:#DEDBC8;">Our Cost</th><th style="text-align:right;padding:8px;background:#111;color:#DEDBC8;">Client Price</th></tr></thead>' +
         '<tbody>' +
-        '<tr><td style="padding:8px;border-bottom:1px solid #2a2a2a;">All modules + labor</td><td style="padding:8px;text-align:right;border-bottom:1px solid #2a2a2a;">€' + Math.round(t.cm) + '/mo</td><td style="padding:8px;text-align:right;border-bottom:1px solid #2a2a2a;">€' + t.mo + '/mo</td><td style="padding:8px;text-align:right;border-bottom:1px solid #2a2a2a;">' + t.m + '%</td></tr>' +
-        '<tr><td style="padding:8px;border-bottom:1px solid #2a2a2a;">One-time</td><td style="padding:8px;text-align:right;border-bottom:1px solid #2a2a2a;">€' + t.ct + '</td><td style="padding:8px;text-align:right;border-bottom:1px solid #2a2a2a;">€' + t.ot + '</td><td></td></tr>' +
-        '<tr style="font-weight:600;"><td style="padding:8px;" colspan="2">Year 1 Revenue</td><td style="padding:8px;text-align:right;">€' + t.yr + '</td><td>Cost: €' + t.yc + '</td></tr>' +
-        '<tr style="font-weight:600;' + (t.p > 0 ? 'color:#4CAF50;' : 'color:#CC3333;') + '"><td style="padding:8px;" colspan="2">Profit (Y1)</td><td style="padding:8px;text-align:right;">€' + t.p + '</td><td><span style="display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600;' + (t.m > 30 ? 'background:rgba(76,175,80,.15);color:#4CAF50;' : 'background:rgba(222,219,200,.15);color:#C4B49A;') + '">' + t.m + '% margin</span></td></tr>' +
+        '<tr><td style="padding:8px;border-bottom:1px solid #2a2a2a;">Monthly (Year 1)</td><td style="padding:8px;text-align:right;border-bottom:1px solid #2a2a2a;">€' + t.cm_y1 + '</td><td style="padding:8px;text-align:right;border-bottom:1px solid #2a2a2a;">€' + t.mo + '</td></tr>' +
+        '<tr><td style="padding:8px;border-bottom:1px solid #2a2a2a;">Monthly (Year 2+)</td><td style="padding:8px;text-align:right;border-bottom:1px solid #2a2a2a;">€' + t.cm + '</td><td style="padding:8px;text-align:right;border-bottom:1px solid #2a2a2a;">€' + t.mo + '</td></tr>' +
+        '<tr><td style="padding:8px;border-bottom:1px solid #2a2a2a;">One-time</td><td style="padding:8px;text-align:right;border-bottom:1px solid #2a2a2a;">€' + t.ct + '</td><td style="padding:8px;text-align:right;border-bottom:1px solid #2a2a2a;">€' + t.ot + '</td></tr>' +
+        '<tr style="font-weight:600;"><td style="padding:8px;border-bottom:1px solid #2a2a2a;" colspan="2">Year 1 Revenue</td><td style="padding:8px;text-align:right;border-bottom:1px solid #2a2a2a;">€' + t.yr + '</td></tr>' +
+        '<tr style="font-weight:600;' + (t.p > 0 ? 'color:#4CAF50;' : 'color:#CC3333;') + '"><td style="padding:8px;" colspan="2">Year 1 Profit</td><td style="padding:8px;text-align:right;">€' + t.p + ' <span style="display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600;' + (t.m > 30 ? 'background:rgba(76,175,80,.15);color:#4CAF50;' : 'background:rgba(222,219,200,.15);color:#C4B49A;') + '">' + t.m + '% margin</span></td></tr>' +
         '</tbody></table></div>';
     }
     ibTable(d.t1, 'Tier 1: ' + (isES ? 'Esencial' : 'Essential'));
