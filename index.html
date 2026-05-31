@@ -135,23 +135,23 @@ var LANG = 'en';
 
 // Pricing — our cost / client sell price
 var P = {
-  m365:   {c:18.70, s:22.50},
-  drop:   {c: 3.00, s: 4.50},
-  msp:    50,
-  b2:     10,
-  forti:  {c: 735, s: 1290},
-  utp:    503,
-  rmm:    20,
-  s1:     {c: 2.50, s: 5.00},
-  dell:   800,
-  datto:  1500,
-  apc:    200,
-  voip:   {c: 12, s: 20},
-  labor:  20,
-  labor_on: 40,
-  T1_ot: 399, T1_mo: 299,
-  T2_ot: 1490, T2_mo: 499,
-  T3_ot: 9490, T3_mo: 1050
+  m365:   {c:18.70},          // per user
+  drop:   {c: 3.00},          // per user
+  msp:    {c:50.00},          // flat €50/mo total (Y1 free)
+  b2:     10,                 // fixed monthly
+  forti:  {c:735},            // FortiGate 60F hardware
+  utp:    503,                // UTP license 1yr
+  rmm:    20,                 // SolarWinds RMM
+  s1:     {c: 2.50},          // per endpoint
+  dell:   {c:800},
+  datto:  {c:1500},
+  apc:    {c:200},
+  voip:   {c:12, s:20},
+  labor_ot:  120,             // one-time setup labor
+  labor_mo:  60,              // ongoing monthly labor
+  t1_mo: 399,   t1_ot: 299,   // Tier 1 fixed sell prices
+  t2_mo: 1490,  t2_ot: 499,   // Tier 2 fixed sell prices
+  t3_mo: 9490,  t3_ot: 1050   // Tier 3 fixed sell prices
 };
 
 // I18N translations
@@ -259,47 +259,55 @@ function calc() {
     return {risks:ind[k]||ind.other};
   })();
 
-  var m365_c = P.m365.c * u;
-  var drop_c = P.drop.c * u;
-  var s1_c = P.s1.c * eps;
-  var forti_mo = P.utp / 12;
 
-  // Tier 1 — Essential
-  var t1_cm = m365_c + P.msp + P.b2 + drop_c + (P.labor * 3);
-  var t1_cm_y1 = m365_c + P.b2 + drop_c + (P.labor * 3);
-  var t1_ct = P.labor_on * 3;
+  // Dynamic costs
+  var m365c = P.m365.c * u;
+  var dropc = P.drop.c * u;
+  var b2c = P.b2;
+  var laborMo = P.labor_mo;
+
+  // Tier 1 — Essential (MSP360 free Y1)
+  var t1_mo_cost_y1 = m365c + dropc + b2c + laborMo;
+  var t1_mo_cost_y2 = m365c + dropc + P.msp.c + b2c + laborMo;
+  var t1_ot_cost = P.labor_ot;
 
   // Tier 2 — Professional (cumulative)
-  var t2_cm = t1_cm + forti_mo + P.rmm + (P.labor * 2);
-  var t2_cm_y1 = t1_cm_y1 + forti_mo + P.rmm + (P.labor * 2);
-  var t2_ct = P.forti.c + (P.labor_on * 4) + 80;
+  var fortiMo = P.forti.c / 12;
+  var utpMo = P.utp / 12;
+  var t2_mo_cost_y1 = t1_mo_cost_y1 + fortiMo + utpMo + P.rmm + 40;
+  var t2_mo_cost_y2 = t1_mo_cost_y2 + fortiMo + utpMo + P.rmm + 40;
+  var t2_ot_cost = t1_ot_cost + P.forti.c;
 
   // Tier 3 — Enterprise (cumulative)
-  var t3_cm = t2_cm + s1_c + (P.labor * 3);
-  var t3_cm_y1 = t2_cm_y1 + s1_c + (P.labor * 3);
-  var t3_ct = P.dell + P.forti.c + P.datto + P.apc + (P.labor_on * 16) + 80 + (P.labor_on * 4) + 150;
+  var s1c = P.s1.c * eps;
+  var t3_mo_cost_y1 = t2_mo_cost_y1 + s1c + 100;
+  var t3_mo_cost_y2 = t2_mo_cost_y2 + s1c + 100;
+  var t3_ot_cost = t2_ot_cost + P.dell.c + P.datto.c + P.apc.c + 800;
 
-  [t1_cm,t2_cm,t3_cm,t1_cm_y1,t2_cm_y1,t3_cm_y1,t1_ct,t2_ct,t3_ct].forEach(function(v,i,a){
-    var target=[t1_cm,t2_cm,t3_cm,t1_cm_y1,t2_cm_y1,t3_cm_y1,t1_ct,t2_ct,t3_ct];
-    target[i]=Math.round(v);
-    t1_cm=target[0];t2_cm=target[1];t3_cm=target[2];
-    t1_cm_y1=target[3];t2_cm_y1=target[4];t3_cm_y1=target[5];
-    t1_ct=target[6];t2_ct=target[7];t3_ct=target[8];
-  });
-
-  function td(ot, mo, cm, ct, cm_y1) {
-    var yr = ot + mo * 12;
-    var yc = ct + cm_y1 * 12;
-    var p = yr - yc;
-    var m = yr > 0 ? Math.round(p / yr * 100) : 0;
-    return { mo: mo, ot: ot, cm: cm, ct: ct, cm_y1: cm_y1, yr: yr, yc: yc, p: p, m: m };
+  function td(moSell, otSell, moCostY1, moCostY2, otCost) {
+    var yrY1 = otSell + moSell * 12;
+    var ycY1 = otCost + moCostY1 * 12;
+    var ycY2 = moCostY2 * 12;
+    var pY1 = yrY1 - ycY1;
+    var mY1 = yrY1 > 0 ? Math.round(pY1 / yrY1 * 100) : 0;
+    var yrY2 = moSell * 12;
+    var pY2 = yrY2 - ycY2;
+    var mY2 = yrY2 > 0 ? Math.round(pY2 / yrY2 * 100) : 0;
+    return {
+      mo_sell: moSell, ot_sell: otSell,
+      mo_cost_y1: Math.round(moCostY1), mo_cost_y2: Math.round(moCostY2),
+      ot_cost: Math.round(otCost),
+      yr_y1: yrY1, yc_y1: Math.round(ycY1), yc_y2: Math.round(ycY2),
+      p_y1: Math.round(pY1), m_y1: mY1,
+      p_y2: Math.round(pY2), m_y2: mY2
+    };
   }
 
   return {
-    t1: td(P.T1_ot, P.T1_mo, t1_cm, t1_ct, t1_cm_y1),
-    t2: td(P.T2_ot, P.T2_mo, t2_cm, t2_ct, t2_cm_y1),
-    t3: td(P.T3_ot, P.T3_mo, t3_cm, t3_ct, t3_cm_y1),
-    u: u, dev: u, rules: rules
+    t1: td(P.t1_mo, P.t1_ot, t1_mo_cost_y1, t1_mo_cost_y2, t1_ot_cost),
+    t2: td(P.t2_mo, P.t2_ot, t2_mo_cost_y1, t2_mo_cost_y2, t2_ot_cost),
+    t3: td(P.t3_mo, P.t3_ot, t3_mo_cost_y1, t3_mo_cost_y2, t3_ot_cost),
+    u: u, dev: dev, rules: rules
   };
 }
 
@@ -370,24 +378,24 @@ function gen() {
       // Tier 1
       '<div class="tcard' + (1===rec?' recommended':'') + '">' +
       (1===rec?'<div style="position:absolute;top:-9px;left:50%;transform:translateX(-50%);background:#DEDBC8;color:#0a0a0a;font-size:10px;font-weight:700;padding:3px 12px;border-radius:10px;letter-spacing:0.5px;">RECOMMENDED</div>':'') +
-      '<div class="tcard-name">Essential</div><div class="tcard-price"><span class="tcard-price-amount">€' + d.t1.mo + '</span> <span class="tcard-price-period">/month</span></div>' +
-      '<div style="font-size:10px;color:#999;margin-bottom:12px;">One-time: €' + d.t1.ot + '</div>' +
+      '<div class="tcard-name">Essential</div><div class="tcard-price"><span class="tcard-price-amount">€' + d.t1.mo_sell + '</span> <span class="tcard-price-period">/month</span></div>' +
+      '<div style="font-size:10px;color:#999;margin-bottom:12px;">One-time: €' + d.t1.ot_sell + '</div>' +
       '<ul class="tcard-features">' + feat1.map(function(f){return'<li class="included">'+f+'</li>';}).join('') + '</ul>' +
       '</div>' +
 
       // Tier 2
       '<div class="tcard' + (2===rec?' recommended':'') + '">' +
       (2===rec?'<div style="position:absolute;top:-9px;left:50%;transform:translateX(-50%);background:#DEDBC8;color:#0a0a0a;font-size:10px;font-weight:700;padding:3px 12px;border-radius:10px;letter-spacing:0.5px;">RECOMMENDED</div>':'') +
-      '<div class="tcard-name">Professional</div><div class="tcard-price"><span class="tcard-price-amount">€' + d.t2.mo + '</span> <span class="tcard-price-period">/month</span></div>' +
-      '<div style="font-size:10px;color:#999;margin-bottom:12px;">One-time: €' + d.t2.ot + '</div>' +
+      '<div class="tcard-name">Professional</div><div class="tcard-price"><span class="tcard-price-amount">€' + d.t2.mo_sell + '</span> <span class="tcard-price-period">/month</span></div>' +
+      '<div style="font-size:10px;color:#999;margin-bottom:12px;">One-time: €' + d.t2.ot_sell + '</div>' +
       '<ul class="tcard-features">' + feat2.map(function(f){return'<li class="included">'+f+'</li>';}).join('') + '</ul>' +
       '</div>' +
 
       // Tier 3
       '<div class="tcard' + (3===rec?' recommended':'') + '">' +
       (3===rec?'<div style="position:absolute;top:-9px;left:50%;transform:translateX(-50%);background:#DEDBC8;color:#0a0a0a;font-size:10px;font-weight:700;padding:3px 12px;border-radius:10px;letter-spacing:0.5px;">RECOMMENDED</div>':'') +
-      '<div class="tcard-name">Enterprise</div><div class="tcard-price"><span class="tcard-price-amount">€' + d.t3.mo + '</span> <span class="tcard-price-period">/month</span></div>' +
-      '<div style="font-size:10px;color:#999;margin-bottom:12px;">One-time: €' + d.t3.ot + '</div>' +
+      '<div class="tcard-name">Enterprise</div><div class="tcard-price"><span class="tcard-price-amount">€' + d.t3.mo_sell + '</span> <span class="tcard-price-period">/month</span></div>' +
+      '<div style="font-size:10px;color:#999;margin-bottom:12px;">One-time: €' + d.t3.ot_sell + '</div>' +
       '<ul class="tcard-features">' + feat3.map(function(f){return'<li class="included">'+f+'</li>';}).join('') + '</ul>' +
       '</div>' +
 
@@ -429,13 +437,14 @@ function gen() {
       ib.innerHTML += '<div style="background:#161616;border:1px solid #2a2a2a;border-radius:12px;padding:20px;margin-top:12px;">' +
         '<h3 style="font-size:13px;font-weight:600;color:#C4B49A;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;">' + name + '</h3>' +
         '<table style="width:100%;border-collapse:collapse;font-size:12px;">' +
-        '<thead><tr><th style="text-align:left;padding:8px;background:#111;color:#DEDBC8;">Item</th><th style="text-align:right;padding:8px;background:#111;color:#DEDBC8;">Our Cost</th><th style="text-align:right;padding:8px;background:#111;color:#DEDBC8;">Client Price</th></tr></thead>' +
+'<thead><tr><th style="text-align:left;padding:8px;background:#111;color:#DEDBC8;">Period</th><th style="text-align:right;padding:8px;background:#111;color:#DEDBC8;">Monthly Cost</th><th style="text-align:right;padding:8px;background:#111;color:#DEDBC8;">Monthly Price</th><th style="text-align:right;padding:8px;background:#111;color:#DEDBC8;">One-time Cost</th><th style="text-align:right;padding:8px;background:#111;color:#DEDBC8;">One-time Price</th></tr></thead>' +
         '<tbody>' +
-        '<tr><td style="padding:8px;border-bottom:1px solid #2a2a2a;">Monthly (Year 1)</td><td style="padding:8px;text-align:right;border-bottom:1px solid #2a2a2a;">€' + t.cm_y1 + '</td><td style="padding:8px;text-align:right;border-bottom:1px solid #2a2a2a;">€' + t.mo + '</td></tr>' +
-        '<tr><td style="padding:8px;border-bottom:1px solid #2a2a2a;">Monthly (Year 2+)</td><td style="padding:8px;text-align:right;border-bottom:1px solid #2a2a2a;">€' + t.cm + '</td><td style="padding:8px;text-align:right;border-bottom:1px solid #2a2a2a;">€' + t.mo + '</td></tr>' +
-        '<tr><td style="padding:8px;border-bottom:1px solid #2a2a2a;">One-time</td><td style="padding:8px;text-align:right;border-bottom:1px solid #2a2a2a;">€' + t.ct + '</td><td style="padding:8px;text-align:right;border-bottom:1px solid #2a2a2a;">€' + t.ot + '</td></tr>' +
-        '<tr style="font-weight:600;"><td style="padding:8px;border-bottom:1px solid #2a2a2a;" colspan="2">Year 1 Revenue</td><td style="padding:8px;text-align:right;border-bottom:1px solid #2a2a2a;">€' + t.yr + '</td></tr>' +
-        '<tr style="font-weight:600;' + (t.p > 0 ? 'color:#4CAF50;' : 'color:#CC3333;') + '"><td style="padding:8px;" colspan="2">Year 1 Profit</td><td style="padding:8px;text-align:right;">€' + t.p + ' <span style="display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600;' + (t.m > 30 ? 'background:rgba(76,175,80,.15);color:#4CAF50;' : 'background:rgba(222,219,200,.15);color:#C4B49A;') + '">' + t.m + '% margin</span></td></tr>' +
+        '<tr><td style="padding:8px;border-bottom:1px solid #2a2a2a;">Y1</td><td style="padding:8px;text-align:right;border-bottom:1px solid #2a2a2a;">€' + t.mo_cost_y1 + '/mo</td><td style="padding:8px;text-align:right;border-bottom:1px solid #2a2a2a;">€' + t.mo_sell + '/mo</td><td style="padding:8px;text-align:right;border-bottom:1px solid #2a2a2a;">€' + t.ot_cost + '</td><td style="padding:8px;text-align:right;border-bottom:1px solid #2a2a2a;">€' + t.ot_sell + '</td></tr>' +
+        '<tr><td style="padding:8px;border-bottom:1px solid #2a2a2a;">Y2+</td><td style="padding:8px;text-align:right;border-bottom:1px solid #2a2a2a;">€' + t.mo_cost_y2 + '/mo</td><td style="padding:8px;text-align:right;border-bottom:1px solid #2a2a2a;">€' + t.mo_sell + '/mo</td><td style="padding:8px;text-align:right;border-bottom:1px solid #2a2a2a;">—</td><td style="padding:8px;text-align:right;border-bottom:1px solid #2a2a2a;">—</td></tr>' +
+        '<tr><td colspan="5" style="border-top:2px solid #2a2a2a;"></td></tr>' +
+        '<tr style="font-weight:600;"><td style="padding:8px;" colspan="2">Y1 Revenue</td><td style="padding:8px;text-align:right;">€' + t.yr_y1 + '</td><td>Cost</td><td style="text-align:right;">€' + t.yc_y1 + '</td></tr>' +
+        '<tr style="font-weight:600;' + (t.m_y1 > 0 ? 'color:#4CAF50;' : 'color:#CC3333;') + '"><td style="padding:8px;" colspan="2">Y1 Profit</td><td style="padding:8px;text-align:right;">€' + t.p_y1 + '</td><td>Margin</td><td style="text-align:right;">' + t.m_y1 + '%</td></tr>' +
+        '<tr style="font-weight:600;' + (t.m_y2 > 0 ? 'color:#4CAF50;' : 'color:#CC3333;') + '"><td style="padding:8px;" colspan="2">Y2+ Profit</td><td style="padding:8px;text-align:right;">€' + t.p_y2 + '/yr</td><td>Margin</td><td style="text-align:right;">' + t.m_y2 + '%</td></tr>'
         '</tbody></table></div>';
     }
     ibTable(d.t1, 'Tier 1: ' + (isES ? 'Esencial' : 'Essential'));
