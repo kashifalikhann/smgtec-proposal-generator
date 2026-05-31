@@ -126,7 +126,7 @@ body{font-family:Inter,sans-serif;background:var(--bg);color:var(--txt);line-hei
       </div>
     </div>
   </div>
-  <button class="btn" onclick="gen()" id="bG">Generate</button>
+  <button class="btn" id="bG">Generate</button>
 </aside>
 <main class="pv">
   <div class="pe" id="eS"><h3 id="txt_et">No proposal yet</h3><p id="txt_ed">Fill in and click Generate.</p></div>
@@ -245,8 +245,8 @@ function setLang(l) {
 function setMode(m) {
   document.getElementById('mC').classList.toggle('active', m === 'client');
   document.getElementById('mI').classList.toggle('active', m === 'internal');
-  document.getElementById('pr').style.display = m === 'client' ? '' : 'none';
-  document.getElementById('ib').style.display = m === 'internal' ? '' : 'none';
+  document.getElementById('pr').style.display = m === 'client' ? 'block' : 'none';
+  document.getElementById('ib').style.display = m === 'internal' ? 'block' : 'none';
   if (m === 'client') document.getElementById('ib').innerHTML = '';
 }
 
@@ -338,6 +338,7 @@ function gen() {
     var cp = document.getElementById('pr');
     cp.innerHTML = '';
     document.getElementById('eS').style.display = 'none';
+    cp.style.display = 'block';
     document.getElementById('ib').innerHTML = '';
 
     // Helper: append a pr page
@@ -465,8 +466,12 @@ function gen() {
   }, 50);
 }
 
-// Init labels
+// Init labels and mode
 setLang('en');
+setMode('client');
+
+// Attach Generate button
+document.getElementById('bG').addEventListener('click', gen);
 
 </script>
 </body>
