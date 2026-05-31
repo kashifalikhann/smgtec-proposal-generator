@@ -98,7 +98,15 @@ body{font-family:Inter,sans-serif;background:var(--bg);color:var(--txt);line-hei
     <div class="fg"><label class="fl" id="l_ind">Industry</label>
       <select class="fsel" id="f_ind"><option value="legal" selected>Legal</option><option value="healthcare">Healthcare</option><option value="finance">Finance</option><option value="other">Other</option></select>
     </div>
-    <div class="fg"><label class="fl" id="l_state">Current IT State</label><textarea class="fi" id="f_state" rows="2" placeholder="e.g. single computer, no backup" style="resize:vertical;min-height:50px"></textarea></div>
+    <div class="fg"><label class="fl" id="l_state">Current IT State</label>
+      <select class="fsel" id="f_state">
+        <option value="No IT infrastructure (startup)">No IT infrastructure (startup)</option>
+        <option value="Basic setup (single computer, no backup)" selected>Basic setup (single computer, no backup)</option>
+        <option value="Some infrastructure (multiple devices)">Some infrastructure (multiple devices)</option>
+        <option value="Established IT (servers, some protection)">Established IT (servers, some protection)</option>
+        <option value="Full IT stack (managed)">Full IT stack (managed)</option>
+      </select>
+    </div>
   </div>
   <div class="fs"><div class="fst" id="l_infra">Infrastructure</div>
     <div class="fw">
@@ -444,7 +452,7 @@ function gen() {
         '<tr><td colspan="5" style="border-top:2px solid #2a2a2a;"></td></tr>' +
         '<tr style="font-weight:600;"><td style="padding:8px;" colspan="2">Y1 Revenue</td><td style="padding:8px;text-align:right;">€' + t.yr_y1 + '</td><td>Cost</td><td style="text-align:right;">€' + t.yc_y1 + '</td></tr>' +
         '<tr style="font-weight:600;' + (t.m_y1 > 0 ? 'color:#4CAF50;' : 'color:#CC3333;') + '"><td style="padding:8px;" colspan="2">Y1 Profit</td><td style="padding:8px;text-align:right;">€' + t.p_y1 + '</td><td>Margin</td><td style="text-align:right;">' + t.m_y1 + '%</td></tr>' +
-        '<tr style="font-weight:600;' + (t.m_y2 > 0 ? 'color:#4CAF50;' : 'color:#CC3333;') + '"><td style="padding:8px;" colspan="2">Y2+ Profit</td><td style="padding:8px;text-align:right;">€' + t.p_y2 + '/yr</td><td>Margin</td><td style="text-align:right;">' + t.m_y2 + '%</td></tr>'
+        '<tr style="font-weight:600;' + (t.m_y2 > 0 ? 'color:#4CAF50;' : 'color:#CC3333;') + '"><td style="padding:8px;" colspan="2">Y2+ Profit</td><td style="padding:8px;text-align:right;">€' + t.p_y2 + '/yr</td><td>Margin</td><td style="text-align:right;">' + t.m_y2 + '%</td></tr>' +
         '</tbody></table></div>';
     }
     ibTable(d.t1, 'Tier 1: ' + (isES ? 'Esencial' : 'Essential'));
